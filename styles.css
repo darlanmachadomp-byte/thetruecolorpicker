@@ -227,6 +227,75 @@ button {
   margin: 0 0 14px;
 }
 
+.example-grid,
+.related-tools {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+  margin: 18px 0 24px;
+}
+
+.example-card,
+.related-tools a,
+.faq-item {
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.example-card {
+  padding: 14px;
+}
+
+.example-card strong,
+.faq-item h3 {
+  color: var(--ink);
+}
+
+.example-card code {
+  display: block;
+  margin-top: 8px;
+  color: var(--ink);
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+
+.faq-list {
+  display: grid;
+  gap: 12px;
+  margin: 16px 0 24px;
+}
+
+.faq-item {
+  padding: 16px;
+}
+
+.faq-item h3 {
+  margin: 0 0 8px;
+  font-size: 16px;
+  font-weight: 800;
+}
+
+.faq-item p {
+  margin: 0;
+}
+
+.related-tools a {
+  display: block;
+  padding: 14px;
+  color: var(--ink);
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.related-tools a span {
+  display: block;
+  margin-top: 6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 600;
+}
+
 .panel {
   min-width: 0;
   height: fit-content;
@@ -622,5 +691,10 @@ body.dark-theme .swatch.selected {
 
   .system-tabs {
     grid-template-columns: repeat(2, 1fr);
+  }
+
+  .example-grid,
+  .related-tools {
+    grid-template-columns: 1fr;
   }
 }
