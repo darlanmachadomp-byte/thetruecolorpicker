@@ -155,7 +155,7 @@ const namedAnchors = [
 ];
 
 let currentHex = "#6C63FF";
-let currentSystem = "rgb";
+let currentSystem = document.body.dataset.defaultSystem || "rgb";
 let currentCmykOverride = null;
 let paletteBaseHex = currentHex;
 let currentLanguage = "en";
@@ -768,6 +768,10 @@ function updateThemeButton() {
   themeToggle.querySelector("span").textContent = isDark ? "○" : "◐";
 }
 
+function syncSystemTabs() {
+  tabs.forEach((item) => item.classList.toggle("active", item.dataset.system === currentSystem));
+}
+
 hexInput.addEventListener("input", (event) => {
   const normalized = normalizeHex(event.target.value);
   if (normalized) updateColor(normalized, { cmyk: null });
@@ -790,7 +794,7 @@ tabs.forEach((tab) => {
     if (currentSystem !== "cmyk") {
       currentCmykOverride = null;
     }
-    tabs.forEach((item) => item.classList.toggle("active", item === tab));
+    syncSystemTabs();
     renderValues(currentHex);
     renderRelated(paletteBaseHex);
   });
@@ -816,5 +820,6 @@ document.addEventListener("click", async (event) => {
   }
 });
 
+syncSystemTabs();
 updateColor(currentHex);
 applyLanguage(currentLanguage);

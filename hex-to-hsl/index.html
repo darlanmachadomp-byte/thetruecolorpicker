@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>HEX to HSL Converter | The True Color Picker</title>
+    <meta name="description" content="Convert HEX colors to HSL values and explore hue, saturation and lightness variations." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://thetruecolorpicker.com/hex-to-hsl/" />
+    <meta property="og:title" content="HEX to HSL Converter" />
+    <meta property="og:description" content="Pick a HEX color and convert it to HSL for CSS and design systems." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://thetruecolorpicker.com/hex-to-hsl/" />
+    <meta property="og:site_name" content="The True Color Picker" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="HEX to HSL Converter" />
+    <meta name="twitter:description" content="Convert HEX colors to HSL values and related shades." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body data-default-system="hsl">
+    <header class="topbar" aria-label="Main navigation">
+      <a class="brand-mini" href="/" aria-label="The True Color Picker"><span class="brand-dot"></span>TTCP</a>
+      <nav class="nav-actions">
+        <a class="coffee-button" href="https://buymeacoffee.com/darlan_sz" target="_blank" rel="noopener noreferrer" data-i18n="buyCoffee">Buy me a coffee</a>
+        <label class="language-menu"><span class="sr-only" data-i18n="chooseLanguage">Choose language</span><select id="languageSelect" aria-label="Choose language"><option value="en">English</option><option value="pt">Português</option><option value="es">Español</option></select></label>
+        <button class="icon-button" id="themeToggle" type="button" aria-label="Dark theme" title="Dark theme"><span aria-hidden="true">◐</span></button>
+      </nav>
+    </header>
+    <main>
+      <section class="hero" id="picker">
+        <h1>HEX to HSL Converter</h1>
+        <p>Convert HEX colors into HSL values and tune hue, saturation and lightness for CSS-friendly color work.</p>
+      </section>
+      <section class="workspace" aria-label="HEX to HSL color converter">
+        <article class="panel input-panel">
+          <div class="panel-heading"><h2 data-i18n="pasteHex">Paste hex</h2><button class="copy-button" data-copy-target="hexValue" data-i18n="copy" type="button">Copy</button></div>
+          <label class="hex-field"><span class="sr-only">Hex color</span><input id="hexInput" type="text" value="#6C63FF" maxlength="7" spellcheck="false" /></label>
+          <h3 data-i18n="colorpicker">Colorpicker</h3>
+          <div class="color-stage"><input id="colorInput" type="color" value="#6c63ff" aria-label="Choose color" /><div class="selected-color" id="selectedColor"></div><div class="picker-message" data-i18n="openColorpicker" aria-hidden="true">Open colorpicker</div><div class="color-readout"><span id="hexValue">#6C63FF</span><strong id="colorName">Electric Iris</strong></div></div>
+        </article>
+        <article class="panel values-panel">
+          <div class="panel-heading"><h2 data-i18n="selectColorSystem">Select color system</h2><span class="pill" id="activeSystem">HSL</span></div>
+          <div class="system-tabs" role="tablist" aria-label="Color systems"><button class="tab" data-system="rgb" type="button">RGB</button><button class="tab active" data-system="hsl" type="button">HSL</button><button class="tab" data-system="cmyk" type="button">CMYK</button><button class="tab" data-system="pantone" type="button">Pantone</button></div>
+          <div class="value-list" id="valueList" aria-live="polite"></div><div class="swatch-grid" id="relatedGrid" aria-label="Related shades"></div>
+        </article>
+      </section>
+      <section class="seo-copy">
+        <h2>Convert HEX to HSL</h2>
+        <p>HSL separates color into hue, saturation and lightness, which makes it practical for building CSS themes and UI states from a single base color.</p>
+      </section>
+    </main>
+    <script src="../script.js"></script>
+  </body>
+</html>

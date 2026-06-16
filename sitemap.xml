@@ -6,4 +6,34 @@
     <changefreq>weekly</changefreq>
     <priority>1.0</priority>
   </url>
+  <url>
+    <loc>https://thetruecolorpicker.com/hex-to-rgb/</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thetruecolorpicker.com/rgb-to-cmyk/</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thetruecolorpicker.com/hex-to-hsl/</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thetruecolorpicker.com/pantone-color-match/</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://thetruecolorpicker.com/color-palette-generator/</loc>
+    <lastmod>2026-06-16</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
