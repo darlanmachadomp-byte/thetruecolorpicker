@@ -86,6 +86,21 @@
           <div class="value-list" id="valueList" aria-live="polite"></div>
           <div class="swatch-grid" id="relatedGrid" aria-label="Related shades"></div>
         </article>
+
+        <article class="panel image-palette-panel">
+          <div class="panel-heading">
+            <h2 data-i18n="imagePalette">Image palette</h2>
+            <span class="pill" id="imageColorCount">0</span>
+          </div>
+          <label class="image-upload">
+            <input id="imageInput" type="file" accept="image/*" />
+            <span data-i18n="uploadImage">Upload image</span>
+          </label>
+          <div class="image-preview" id="imagePreview">
+            <span data-i18n="imageDropHint">Choose a photo to extract dominant colors.</span>
+          </div>
+          <div class="image-palette-grid" id="imagePaletteGrid" aria-label="Extracted image palette"></div>
+        </article>
       </section>
     </main>
 

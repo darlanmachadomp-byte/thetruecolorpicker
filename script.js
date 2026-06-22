@@ -11,6 +11,10 @@ const backgroundGrid = document.querySelector("#backgroundGrid");
 const textGrid = document.querySelector("#textGrid");
 const languageSelect = document.querySelector("#languageSelect");
 const themeToggle = document.querySelector("#themeToggle");
+const imageInput = document.querySelector("#imageInput");
+const imagePreview = document.querySelector("#imagePreview");
+const imagePaletteGrid = document.querySelector("#imagePaletteGrid");
+const imageColorCount = document.querySelector("#imageColorCount");
 const tabs = [...document.querySelectorAll(".tab")];
 
 const translations = {
@@ -36,7 +40,10 @@ const translations = {
     magenta: "Magenta",
     yellow: "Yellow",
     key: "Key",
-    match: "Match"
+    match: "Match",
+    imagePalette: "Image palette",
+    uploadImage: "Upload image",
+    imageDropHint: "Choose a photo to extract dominant colors."
   },
   pt: {
     chooseLanguage: "Escolher idioma",
@@ -60,7 +67,10 @@ const translations = {
     magenta: "Magenta",
     yellow: "Amarelo",
     key: "Preto",
-    match: "Amostra"
+    match: "Amostra",
+    imagePalette: "Paleta da imagem",
+    uploadImage: "Enviar imagem",
+    imageDropHint: "Escolha uma foto para extrair as cores dominantes."
   },
   es: {
     chooseLanguage: "Elegir idioma",
@@ -84,7 +94,10 @@ const translations = {
     magenta: "Magenta",
     yellow: "Amarillo",
     key: "Negro",
-    match: "Muestra"
+    match: "Muestra",
+    imagePalette: "Paleta de imagen",
+    uploadImage: "Subir imagen",
+    imageDropHint: "Elige una foto para extraer los colores dominantes."
   }
 };
 
@@ -408,6 +421,78 @@ function uniqueColors(colors) {
     seen.add(normalized);
     return true;
   });
+}
+
+function getImagePalette(image, colorCount = 8) {
+  const canvas = document.createElement("canvas");
+  const context = canvas.getContext("2d", { willReadFrequently: true });
+  const maxSize = 160;
+  const scale = Math.min(maxSize / image.naturalWidth, maxSize / image.naturalHeight, 1);
+  canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+  canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+  context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+  const pixels = context.getImageData(0, 0, canvas.width, canvas.height).data;
+  const buckets = new Map();
+
+  for (let index = 0; index < pixels.length; index += 16) {
+    const alpha = pixels[index + 3];
+    if (alpha < 180) continue;
+
+    const r = pixels[index];
+    const g = pixels[index + 1];
+    const b = pixels[index + 2];
+    const max = Math.max(r, g, b);
+    const min = Math.min(r, g, b);
+    if (max < 18 || min > 242) continue;
+
+    const key = `${Math.round(r / 24)},${Math.round(g / 24)},${Math.round(b / 24)}`;
+    const bucket = buckets.get(key) || { r: 0, g: 0, b: 0, count: 0 };
+    bucket.r += r;
+    bucket.g += g;
+    bucket.b += b;
+    bucket.count += 1;
+    buckets.set(key, bucket);
+  }
+
+  return [...buckets.values()]
+    .sort((a, b) => b.count - a.count)
+    .slice(0, colorCount)
+    .map((bucket) => rgbToHex({
+      r: bucket.r / bucket.count,
+      g: bucket.g / bucket.count,
+      b: bucket.b / bucket.count
+    }));
+}
+
+function renderImagePalette(colors) {
+  if (!imagePaletteGrid || !imageColorCount) return;
+
+  imageColorCount.textContent = colors.length;
+  imagePaletteGrid.innerHTML = colors.map((hex) => `
+    <button class="image-color" type="button" data-color="${hex}" data-copy="${hex}" title="${hex}" aria-label="Use ${hex}" style="background:${hex};color:${textColorFor(hex)};text-shadow:none">
+      ${hex}
+    </button>
+  `).join("");
+}
+
+function handleImageUpload(file) {
+  if (!file || !imagePreview) return;
+  const reader = new FileReader();
+
+  reader.addEventListener("load", () => {
+    const image = new Image();
+    image.addEventListener("load", () => {
+      imagePreview.innerHTML = "";
+      imagePreview.appendChild(image);
+      const colors = getImagePalette(image);
+      renderImagePalette(colors);
+      if (colors[0]) updateColor(colors[0]);
+    });
+    image.src = reader.result;
+  });
+
+  reader.readAsDataURL(file);
 }
 
 function cmykLabel(cmyk) {
@@ -778,6 +863,10 @@ hexInput.addEventListener("input", (event) => {
 });
 
 colorInput.addEventListener("input", (event) => updateColor(event.target.value, { cmyk: null }));
+
+imageInput?.addEventListener("change", (event) => {
+  handleImageUpload(event.target.files?.[0]);
+});
 
 languageSelect?.addEventListener("change", (event) => {
   applyLanguage(event.target.value);
