@@ -783,7 +783,6 @@ function updateColor(nextHex, options = {}) {
   hexInput.value = currentHex;
   selectedColor.style.background = currentHex;
   hexValue.textContent = currentHex;
-  colorName.textContent = nearestName(currentHex);
   renderValues(currentHex);
   renderRelated(paletteBaseHex);
   renderFamilies(currentHex);
