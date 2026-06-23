@@ -123,6 +123,7 @@
             </label>
           </div>
           <div class="palette-slots" id="savedPalette" aria-label="Saved colors"></div>
+          <a class="export-palette-button disabled" id="exportPaletteButton" data-i18n="exportPalette" aria-disabled="true">Export palette</a>
         </article>
       </section>
     </main>
@@ -140,6 +141,19 @@
           </div>
         </div>
         <button class="download-card" id="downloadColorCard" type="button" data-i18n="downloadCard">Download</button>
+      </div>
+    </div>
+
+    <div class="color-card-overlay" id="palettePreviewOverlay" hidden>
+      <button class="overlay-close" id="closePalettePreview" type="button" aria-label="Close palette preview">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      </button>
+      <div class="palette-preview-shell" role="dialog" aria-modal="true" aria-labelledby="palettePreviewTitle">
+        <div class="palette-preview-panel">
+          <h2 id="palettePreviewTitle" data-i18n="palettePreview">Palette preview</h2>
+          <img id="palettePreviewImage" alt="Saved palette export preview" />
+        </div>
+        <a class="download-card" id="downloadPalettePreview" data-i18n="downloadCard" download="saved-palette.png">Download</a>
       </div>
     </div>
 

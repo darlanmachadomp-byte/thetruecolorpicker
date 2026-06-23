@@ -17,12 +17,17 @@ const imagePaletteGrid = document.querySelector("#imagePaletteGrid");
 const imageColorCount = document.querySelector("#imageColorCount");
 const paletteSizeSelect = document.querySelector("#paletteSizeSelect");
 const savedPalette = document.querySelector("#savedPalette");
+const exportPaletteButton = document.querySelector("#exportPaletteButton");
 const colorCardOverlay = document.querySelector("#colorCardOverlay");
 const closeColorCard = document.querySelector("#closeColorCard");
 const downloadColorCard = document.querySelector("#downloadColorCard");
 const exportCardSwatch = document.querySelector("#exportCardSwatch");
 const exportCodeGrid = document.querySelector("#exportCodeGrid");
 const colorCardTitle = document.querySelector("#colorCardTitle");
+const palettePreviewOverlay = document.querySelector("#palettePreviewOverlay");
+const closePalettePreview = document.querySelector("#closePalettePreview");
+const palettePreviewImage = document.querySelector("#palettePreviewImage");
+const downloadPalettePreview = document.querySelector("#downloadPalettePreview");
 const tabs = [...document.querySelectorAll(".tab")];
 
 const translations = {
@@ -59,6 +64,8 @@ const translations = {
     removeColor: "Remove color",
     copyColor: "Copy color",
     exportCard: "Export card",
+    exportPalette: "Export palette",
+    palettePreview: "Palette preview",
     downloadCard: "Download",
     colorCard: "Color card",
     closeColorCard: "Close color card",
@@ -97,6 +104,8 @@ const translations = {
     removeColor: "Remover cor",
     copyColor: "Copiar cor",
     exportCard: "Exportar cartão",
+    exportPalette: "Exportar paleta",
+    palettePreview: "Prévia da paleta",
     downloadCard: "Baixar",
     colorCard: "Cartão da cor",
     closeColorCard: "Fechar cartão da cor",
@@ -135,6 +144,8 @@ const translations = {
     removeColor: "Eliminar color",
     copyColor: "Copiar color",
     exportCard: "Exportar tarjeta",
+    exportPalette: "Exportar paleta",
+    palettePreview: "Vista previa de paleta",
     downloadCard: "Descargar",
     colorCard: "Tarjeta de color",
     closeColorCard: "Cerrar tarjeta de color",
@@ -909,6 +920,8 @@ function renderSavedPalette() {
       </div>
     `;
   }).join("");
+
+  updatePaletteExportLink();
 }
 
 function getColorCardCodes(hex) {
@@ -988,13 +1001,104 @@ function drawColorCard(canvas, hex) {
   });
 }
 
+function downloadCanvas(canvas, filename) {
+  canvas.toBlob((blob) => {
+    if (!blob) return;
+
+    const link = document.createElement("a");
+    const url = URL.createObjectURL(blob);
+    link.download = filename;
+    link.href = url;
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }, "image/png");
+}
+
 function downloadColorCardImage() {
   const canvas = document.createElement("canvas");
   drawColorCard(canvas, exportCardHex);
-  const link = document.createElement("a");
-  link.download = `color-card-${exportCardHex.replace("#", "")}.png`;
-  link.href = canvas.toDataURL("image/png");
-  link.click();
+  downloadCanvas(canvas, `color-card-${exportCardHex.replace("#", "")}.png`);
+}
+
+function drawPaletteExport(canvas) {
+  const colors = savedColors.slice(0, paletteSize);
+  const cardWidth = 520;
+  const cardHeight = 680;
+  const gap = 28;
+  const padding = 48;
+  const columns = colors.length <= 3 ? colors.length : Math.min(4, colors.length);
+  const rows = Math.ceil(colors.length / columns);
+  const width = (padding * 2) + (columns * cardWidth) + ((columns - 1) * gap);
+  const height = (padding * 2) + (rows * cardHeight) + ((rows - 1) * gap);
+  const ctx = canvas.getContext("2d");
+
+  canvas.width = width;
+  canvas.height = height;
+  ctx.fillStyle = "#121214";
+  ctx.fillRect(0, 0, width, height);
+
+  colors.forEach((hex, index) => {
+    const col = index % columns;
+    const row = Math.floor(index / columns);
+    const x = padding + col * (cardWidth + gap);
+    const y = padding + row * (cardHeight + gap);
+    const swatchHeight = 410;
+    const codes = getColorCardCodes(hex).slice(0, 4);
+
+    ctx.fillStyle = "#FFFFFF";
+    ctx.fillRect(x, y, cardWidth, cardHeight);
+    ctx.fillStyle = hex;
+    ctx.fillRect(x, y, cardWidth, swatchHeight);
+    ctx.fillStyle = "#111111";
+    ctx.font = "700 24px Inter, Arial, sans-serif";
+    ctx.fillText(t("colorCard"), x + 38, y + swatchHeight + 50);
+
+    ctx.font = "700 17px Inter, Arial, sans-serif";
+    codes.forEach(([label, value], codeIndex) => {
+      const codeCol = codeIndex % 2;
+      const codeRow = Math.floor(codeIndex / 2);
+      const codeX = x + (codeCol === 0 ? 38 : 278);
+      const codeY = y + swatchHeight + 104 + (codeRow * 72);
+      ctx.fillStyle = "#6c6c72";
+      ctx.fillText(label, codeX, codeY);
+      ctx.fillStyle = "#111111";
+      ctx.font = "400 19px Inter, Arial, sans-serif";
+      ctx.fillText(value, codeX, codeY + 29);
+      ctx.font = "700 17px Inter, Arial, sans-serif";
+    });
+  });
+}
+
+function getPaletteExportDataUrl() {
+  const canvas = document.createElement("canvas");
+  drawPaletteExport(canvas);
+  return canvas.toDataURL("image/png");
+}
+
+function updatePaletteExportLink() {
+  if (!exportPaletteButton) return;
+
+  const hasColors = savedColors.length > 0;
+  exportPaletteButton.classList.toggle("disabled", !hasColors);
+  exportPaletteButton.setAttribute("aria-disabled", String(!hasColors));
+}
+
+function openPalettePreview() {
+  if (!savedColors.length || !palettePreviewOverlay || !palettePreviewImage || !downloadPalettePreview) return;
+
+  const dataUrl = getPaletteExportDataUrl();
+  const filename = `saved-palette-${savedColors.length}-colors.png`;
+  palettePreviewImage.src = dataUrl;
+  downloadPalettePreview.href = dataUrl;
+  downloadPalettePreview.download = filename;
+  palettePreviewOverlay.hidden = false;
+}
+
+function closePalettePreviewModal() {
+  if (!palettePreviewOverlay) return;
+  palettePreviewOverlay.hidden = true;
 }
 
 function updateColor(nextHex, options = {}) {
@@ -1082,8 +1186,20 @@ function applyLanguage(language) {
   if (downloadColorCard) {
     downloadColorCard.textContent = t("downloadCard");
   }
+  if (exportPaletteButton) {
+    exportPaletteButton.textContent = t("exportPalette");
+  }
+  if (closePalettePreview) {
+    closePalettePreview.setAttribute("aria-label", t("closeColorCard"));
+  }
+  if (downloadPalettePreview) {
+    downloadPalettePreview.textContent = t("downloadCard");
+  }
   if (!colorCardOverlay?.hidden) {
     renderColorCard(exportCardHex);
+  }
+  if (!palettePreviewOverlay?.hidden) {
+    openPalettePreview();
   }
   updateThemeButton();
   renderValues(currentHex);
@@ -1123,15 +1239,34 @@ closeColorCard?.addEventListener("click", closeColorCardModal);
 
 downloadColorCard?.addEventListener("click", downloadColorCardImage);
 
+exportPaletteButton?.addEventListener("click", (event) => {
+  event.preventDefault();
+  if (!savedColors.length) {
+    return;
+  }
+  openPalettePreview();
+});
+
+closePalettePreview?.addEventListener("click", closePalettePreviewModal);
+
 colorCardOverlay?.addEventListener("click", (event) => {
   if (event.target === colorCardOverlay) {
     closeColorCardModal();
   }
 });
 
+palettePreviewOverlay?.addEventListener("click", (event) => {
+  if (event.target === palettePreviewOverlay) {
+    closePalettePreviewModal();
+  }
+});
+
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape" && colorCardOverlay && !colorCardOverlay.hidden) {
     closeColorCardModal();
+  }
+  if (event.key === "Escape" && palettePreviewOverlay && !palettePreviewOverlay.hidden) {
+    closePalettePreviewModal();
   }
 });
 
