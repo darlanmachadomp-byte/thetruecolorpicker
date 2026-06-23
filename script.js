@@ -47,7 +47,7 @@ const translations = {
   },
   pt: {
     chooseLanguage: "Escolher idioma",
-    buyCoffee: "Me pague um café",
+    buyCoffee: "Buy me a coffee",
     heroText: "Seu seletor de cores prático para sistemas de design, paletas e valores de cor prontos para produção.",
     pasteHex: "Escolha uma cor",
     copy: "Copiar",
@@ -74,7 +74,7 @@ const translations = {
   },
   es: {
     chooseLanguage: "Elegir idioma",
-    buyCoffee: "Invítame un café",
+    buyCoffee: "Buy me a coffee",
     heroText: "Tu selector de color práctico para sistemas de diseño, paletas y valores de color listos para producción.",
     pasteHex: "Elige un color",
     copy: "Copiar",
