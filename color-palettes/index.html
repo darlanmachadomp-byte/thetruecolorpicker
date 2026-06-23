@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Color Palettes by Keyword | The True Color Picker</title>
+    <meta name="description" content="Search words or phrases and generate matching color palettes with HEX, RGB, HSL and CMYK values for design projects." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://thetruecolorpicker.com/color-palettes/" />
+    <meta property="og:title" content="Color Palettes by Keyword" />
+    <meta property="og:description" content="Generate palettes from words, moods and creative prompts, then preview and download palette cards." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://thetruecolorpicker.com/color-palettes/" />
+    <meta property="og:site_name" content="The True Color Picker" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Color Palettes by Keyword" />
+    <meta name="twitter:description" content="Search a word or phrase and generate matching color palettes for design work." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="dark-theme palette-page">
+    <header class="topbar" aria-label="Main navigation">
+      <a class="brand-mini" href="/" aria-label="The True Color Picker"><span class="brand-dot"></span>TTCP</a>
+      <nav class="nav-menu">
+        <a class="nav-link" href="/">Color picker</a>
+        <a class="nav-link" href="/pantone-finder/">Pantone finder</a>
+      </nav>
+      <a class="coffee-button" href="https://buymeacoffee.com/darlan_sz" target="_blank" rel="noopener noreferrer">Buy me a coffee</a>
+    </header>
+
+    <main>
+      <section class="palette-search-hero">
+        <h1>Color palettes</h1>
+        <form class="palette-search-form" id="paletteSearchForm">
+          <label class="sr-only" for="paletteSearchInput">Search words or phrases</label>
+          <input id="paletteSearchInput" type="search" value="minimal ocean brand" placeholder="Search a word or phrase, like sunset cafe, luxury skincare, cyberpunk poster..." autocomplete="off" />
+        </form>
+      </section>
+
+      <section class="palette-results" id="paletteResults" aria-live="polite"></section>
+    </main>
+
+    <div class="color-card-overlay" id="paletteSearchOverlay" hidden>
+      <button class="overlay-close" id="closePaletteSearchPreview" type="button" aria-label="Close palette preview">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      </button>
+      <div class="palette-preview-shell" role="dialog" aria-modal="true" aria-labelledby="paletteSearchPreviewTitle">
+        <div class="palette-preview-panel">
+          <h2 id="paletteSearchPreviewTitle">Palette preview</h2>
+          <img id="paletteSearchPreviewImage" alt="Generated palette export preview" />
+        </div>
+        <a class="download-card" id="downloadPaletteSearchPreview" download="color-palette.png">Download</a>
+      </div>
+    </div>
+
+    <script src="palettes.js"></script>
+  </body>
+</html>

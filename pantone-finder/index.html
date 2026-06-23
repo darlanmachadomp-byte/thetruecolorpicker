@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pantone Color Finder | The True Color Picker</title>
+    <meta name="description" content="Find approximate Pantone-like color matches from HEX, RGB or HSL values and browse Pantone-style shades by color family." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://thetruecolorpicker.com/pantone-finder/" />
+    <meta property="og:title" content="Pantone Color Finder" />
+    <meta property="og:description" content="Search by HEX, RGB, HSL or Pantone name and find close Pantone-like color matches." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://thetruecolorpicker.com/pantone-finder/" />
+    <meta property="og:site_name" content="The True Color Picker" />
+    <meta name="twitter:card" content="summary" />
+    <meta name="twitter:title" content="Pantone Color Finder" />
+    <meta name="twitter:description" content="Find approximate Pantone-like matches from common color values." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="../styles.css" />
+  </head>
+  <body class="dark-theme palette-page">
+    <header class="topbar" aria-label="Main navigation">
+      <a class="brand-mini" href="/" aria-label="The True Color Picker"><span class="brand-dot"></span>TTCP</a>
+      <nav class="nav-menu">
+        <a class="nav-link" href="/color-palettes/">Palettes</a>
+        <a class="nav-link" href="/">Color picker</a>
+      </nav>
+      <a class="coffee-button" href="https://buymeacoffee.com/darlan_sz" target="_blank" rel="noopener noreferrer">Buy me a coffee</a>
+    </header>
+
+    <main>
+      <section class="palette-search-hero pantone-finder-hero">
+        <h1>Pantone color finder</h1>
+        <form class="palette-search-form pantone-search-form" id="pantoneSearchForm">
+          <label class="sr-only" for="pantoneSearchInput">Search Pantone-like colors</label>
+          <input id="pantoneSearchInput" type="search" value="#6C63FF" placeholder="Paste HEX, RGB, HSL, or type a Pantone name..." autocomplete="off" />
+          <input id="pantoneColorInput" type="color" value="#6c63ff" aria-label="Choose color" />
+        </form>
+        <div class="pantone-filter-bar" id="pantoneFilterBar" aria-label="Pantone color families">
+          <button class="filter-chip active" type="button" data-family="all">All</button>
+          <button class="filter-chip" type="button" data-family="red">Reds</button>
+          <button class="filter-chip" type="button" data-family="orange">Oranges</button>
+          <button class="filter-chip" type="button" data-family="yellow">Yellows</button>
+          <button class="filter-chip" type="button" data-family="green">Greens</button>
+          <button class="filter-chip" type="button" data-family="blue">Blues</button>
+          <button class="filter-chip" type="button" data-family="pink">Pinks</button>
+          <button class="filter-chip" type="button" data-family="purple">Purples</button>
+          <button class="filter-chip" type="button" data-family="neutral">Neutrals</button>
+          <button class="filter-chip" type="button" data-family="dark">Darks</button>
+        </div>
+      </section>
+
+      <section class="pantone-summary" id="pantoneSummary" aria-live="polite"></section>
+      <section class="pantone-results" id="pantoneResults" aria-live="polite"></section>
+    </main>
+
+    <script src="pantone-finder.js"></script>
+  </body>
+</html>
