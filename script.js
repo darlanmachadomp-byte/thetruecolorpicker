@@ -22,7 +22,7 @@ const translations = {
     chooseLanguage: "Choose language",
     buyCoffee: "Buy me a coffee",
     heroText: "Your practical color picker for design systems, palettes, contrast, and production-ready color values.",
-    pasteHex: "Paste hex",
+    pasteHex: "Pick a color",
     copy: "Copy",
     copied: "Copied",
     copyFailed: "Copy?",
@@ -41,7 +41,7 @@ const translations = {
     yellow: "Yellow",
     key: "Key",
     match: "Match",
-    imagePalette: "Image palette",
+    imagePalette: "Image to palette",
     uploadImage: "Upload image",
     imageDropHint: "Choose a photo to extract dominant colors."
   },
@@ -49,7 +49,7 @@ const translations = {
     chooseLanguage: "Escolher idioma",
     buyCoffee: "Me pague um café",
     heroText: "Seu seletor de cores prático para sistemas de design, paletas e valores de cor prontos para produção.",
-    pasteHex: "Cole o hex",
+    pasteHex: "Escolha uma cor",
     copy: "Copiar",
     copied: "Copiado",
     copyFailed: "Falhou",
@@ -68,7 +68,7 @@ const translations = {
     yellow: "Amarelo",
     key: "Preto",
     match: "Amostra",
-    imagePalette: "Paleta da imagem",
+    imagePalette: "Imagem para paleta",
     uploadImage: "Enviar imagem",
     imageDropHint: "Escolha uma foto para extrair as cores dominantes."
   },
@@ -76,7 +76,7 @@ const translations = {
     chooseLanguage: "Elegir idioma",
     buyCoffee: "Invítame un café",
     heroText: "Tu selector de color práctico para sistemas de diseño, paletas y valores de color listos para producción.",
-    pasteHex: "Pegar hex",
+    pasteHex: "Elige un color",
     copy: "Copiar",
     copied: "Copiado",
     copyFailed: "Fallo",
@@ -95,7 +95,7 @@ const translations = {
     yellow: "Amarillo",
     key: "Negro",
     match: "Muestra",
-    imagePalette: "Paleta de imagen",
+    imagePalette: "Imagen a paleta",
     uploadImage: "Subir imagen",
     imageDropHint: "Elige una foto para extraer los colores dominantes."
   }
