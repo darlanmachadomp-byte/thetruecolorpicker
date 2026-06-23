@@ -92,6 +92,21 @@
           <div class="swatch-grid" id="relatedGrid" aria-label="Related shades"></div>
         </article>
 
+        <article class="panel image-palette-panel">
+          <div class="panel-heading">
+            <h2 data-i18n="imagePalette">Image to palette</h2>
+            <span class="pill" id="imageColorCount">0</span>
+          </div>
+          <label class="image-upload">
+            <input id="imageInput" type="file" accept="image/*" />
+            <span data-i18n="uploadImage">Upload image</span>
+          </label>
+          <div class="image-preview" id="imagePreview">
+            <span data-i18n="imageDropHint">Choose a photo to extract dominant colors.</span>
+          </div>
+          <div class="image-palette-grid" id="imagePaletteGrid" aria-label="Extracted image palette"></div>
+        </article>
+
         <article class="panel saved-palette-panel">
           <div class="panel-heading">
             <h2 data-i18n="savedPalette">Saved palette</h2>
@@ -108,21 +123,6 @@
             </label>
           </div>
           <div class="palette-slots" id="savedPalette" aria-label="Saved colors"></div>
-        </article>
-
-        <article class="panel image-palette-panel">
-          <div class="panel-heading">
-            <h2 data-i18n="imagePalette">Image to palette</h2>
-            <span class="pill" id="imageColorCount">0</span>
-          </div>
-          <label class="image-upload">
-            <input id="imageInput" type="file" accept="image/*" />
-            <span data-i18n="uploadImage">Upload image</span>
-          </label>
-          <div class="image-preview" id="imagePreview">
-            <span data-i18n="imageDropHint">Choose a photo to extract dominant colors.</span>
-          </div>
-          <div class="image-palette-grid" id="imagePaletteGrid" aria-label="Extracted image palette"></div>
         </article>
       </section>
     </main>
