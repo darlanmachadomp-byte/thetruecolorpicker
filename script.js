@@ -15,6 +15,14 @@ const imageInput = document.querySelector("#imageInput");
 const imagePreview = document.querySelector("#imagePreview");
 const imagePaletteGrid = document.querySelector("#imagePaletteGrid");
 const imageColorCount = document.querySelector("#imageColorCount");
+const paletteSizeSelect = document.querySelector("#paletteSizeSelect");
+const savedPalette = document.querySelector("#savedPalette");
+const colorCardOverlay = document.querySelector("#colorCardOverlay");
+const closeColorCard = document.querySelector("#closeColorCard");
+const downloadColorCard = document.querySelector("#downloadColorCard");
+const exportCardSwatch = document.querySelector("#exportCardSwatch");
+const exportCodeGrid = document.querySelector("#exportCodeGrid");
+const colorCardTitle = document.querySelector("#colorCardTitle");
 const tabs = [...document.querySelectorAll(".tab")];
 
 const translations = {
@@ -43,7 +51,18 @@ const translations = {
     match: "Match",
     imagePalette: "Image to palette",
     uploadImage: "Upload image",
-    imageDropHint: "Choose a photo to extract dominant colors."
+    imageDropHint: "Choose a photo to extract dominant colors.",
+    savedPalette: "Saved palette",
+    paletteSize: "Palette size",
+    addToPalette: "Add to palette",
+    suggestColor: "Suggest color",
+    removeColor: "Remove color",
+    copyColor: "Copy color",
+    exportCard: "Export card",
+    downloadCard: "Download",
+    colorCard: "Color card",
+    closeColorCard: "Close color card",
+    emptySlot: "Empty"
   },
   pt: {
     chooseLanguage: "Escolher idioma",
@@ -70,7 +89,18 @@ const translations = {
     match: "Amostra",
     imagePalette: "Imagem para paleta",
     uploadImage: "Enviar imagem",
-    imageDropHint: "Escolha uma foto para extrair as cores dominantes."
+    imageDropHint: "Escolha uma foto para extrair as cores dominantes.",
+    savedPalette: "Paleta salva",
+    paletteSize: "Tamanho da paleta",
+    addToPalette: "Adicionar à paleta",
+    suggestColor: "Sugerir cor",
+    removeColor: "Remover cor",
+    copyColor: "Copiar cor",
+    exportCard: "Exportar cartão",
+    downloadCard: "Baixar",
+    colorCard: "Cartão da cor",
+    closeColorCard: "Fechar cartão da cor",
+    emptySlot: "Vazio"
   },
   es: {
     chooseLanguage: "Elegir idioma",
@@ -97,7 +127,18 @@ const translations = {
     match: "Muestra",
     imagePalette: "Imagen a paleta",
     uploadImage: "Subir imagen",
-    imageDropHint: "Elige una foto para extraer los colores dominantes."
+    imageDropHint: "Elige una foto para extraer los colores dominantes.",
+    savedPalette: "Paleta guardada",
+    paletteSize: "Tamaño de paleta",
+    addToPalette: "Añadir a paleta",
+    suggestColor: "Sugerir color",
+    removeColor: "Eliminar color",
+    copyColor: "Copiar color",
+    exportCard: "Exportar tarjeta",
+    downloadCard: "Descargar",
+    colorCard: "Tarjeta de color",
+    closeColorCard: "Cerrar tarjeta de color",
+    emptySlot: "Vacío"
   }
 };
 
@@ -172,6 +213,22 @@ let currentSystem = document.body.dataset.defaultSystem || "rgb";
 let currentCmykOverride = null;
 let paletteBaseHex = currentHex;
 let currentLanguage = "en";
+let paletteSize = Number(paletteSizeSelect?.value || 5);
+let savedColors = [];
+let exportCardHex = currentHex;
+
+const icons = {
+  plus: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14"></path><path d="M12 5v14"></path></svg>',
+  copy: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="14" height="14" x="8" y="8" rx="2" ry="2"></rect><path d="M4 16c-1.1 0-2-.9-2-2V4c0-1.1.9-2 2-2h10c1.1 0 2 .9 2 2"></path></svg>',
+  card: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect width="20" height="14" x="2" y="5" rx="2"></rect><path d="M2 10h20"></path></svg>',
+  sparkles: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .962 0L14.064 8.5A2 2 0 0 0 15.5 9.937l6.135 1.582a.5.5 0 0 1 0 .962L15.5 14.064a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.962 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>',
+  x: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>',
+  download: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><path d="M7 10l5 5 5-5"></path><path d="M12 15V3"></path></svg>'
+};
+
+function icon(name) {
+  return icons[name] || "";
+}
 
 function t(key) {
   return translations[currentLanguage][key] || translations.en[key] || key;
@@ -470,9 +527,12 @@ function renderImagePalette(colors) {
 
   imageColorCount.textContent = colors.length;
   imagePaletteGrid.innerHTML = colors.map((hex) => `
-    <button class="image-color" type="button" data-color="${hex}" data-copy="${hex}" title="${hex}" aria-label="Use ${hex}" style="background:${hex};color:${textColorFor(hex)};text-shadow:none">
-      ${hex}
-    </button>
+    <div class="image-color-wrap">
+      <button class="image-color" type="button" data-color="${hex}" data-copy="${hex}" title="${hex}" aria-label="Use ${hex}" style="background:${hex};color:${textColorFor(hex)};text-shadow:none">
+        ${hex}
+      </button>
+      <button class="add-swatch" type="button" data-add-color="${hex}" title="${t("addToPalette")}" aria-label="${t("addToPalette")} ${hex}">${icon("plus")}</button>
+    </div>
   `).join("");
 }
 
@@ -700,7 +760,7 @@ function renderValues(hex) {
       <div class="value-row">
         <span>${label}</span>
         <strong>${value}</strong>
-        <button class="mini-copy" type="button" data-copy="${value}" title="${t("copyLabel")} ${label}" aria-label="${t("copyLabel")} ${label}">⧉</button>
+        <button class="mini-copy" type="button" data-copy="${value}" title="${t("copyLabel")} ${label}" aria-label="${t("copyLabel")} ${label}">${icon("copy")}</button>
       </div>
     `)
     .join("") + (currentSystem === "cmyk" ? `
@@ -718,7 +778,12 @@ function renderRelated(hex) {
       const description = swatch.cmyk ? cmykLabel(swatch.cmyk) : describeSwatch(swatch.hex);
       const isSelected = swatch.cmyk ? sameCmyk(activeCmyk, swatch.cmyk) : normalizeHex(swatch.hex) === currentHex;
       const cmykAttribute = swatch.cmyk ? ` data-cmyk="${cmykData(swatch.cmyk)}"` : "";
-      return `<button class="swatch${isSelected ? " selected" : ""}" type="button" data-color="${swatch.hex}"${cmykAttribute} title="${description}" aria-label="Use ${description}" style="background:${swatch.hex}"></button>`;
+      return `
+        <div class="swatch-item">
+          <button class="swatch${isSelected ? " selected" : ""}" type="button" data-color="${swatch.hex}"${cmykAttribute} title="${description}" aria-label="Use ${description}" style="background:${swatch.hex}"></button>
+          <button class="add-swatch" type="button" data-add-color="${swatch.hex}" title="${t("addToPalette")}" aria-label="${t("addToPalette")} ${description}">${icon("plus")}</button>
+        </div>
+      `;
     })
     .join("");
 }
@@ -767,6 +832,169 @@ function renderContrast(hex) {
       `;
     })
     .join("");
+}
+
+function getPaletteSuggestion(slotIndex = 0) {
+  const base = savedColors[0] || currentHex;
+  const suggestions = uniqueColors([
+    currentHex,
+    shiftedColor(base, 30, 0, 0),
+    shiftedColor(base, -30, 0, 0),
+    shiftedColor(base, 180, 8, 0),
+    shiftedColor(base, 120, 0, 0),
+    shiftedColor(base, 240, 0, 0),
+    shiftedColor(base, 0, -18, 16),
+    shiftedColor(base, 0, 12, -14),
+    shiftedColor(base, 150, -8, 8),
+    shiftedColor(base, 210, -8, -8)
+  ]);
+
+  return suggestions.find((color) => !savedColors.includes(color)) || shiftedColor(base, (slotIndex + 1) * 37, 0, 0);
+}
+
+function addColorToPalette(hex) {
+  const normalized = normalizeHex(hex);
+  if (!normalized || savedColors.includes(normalized)) return;
+  if (savedColors.length >= paletteSize) return;
+
+  savedColors.push(normalized);
+  renderSavedPalette();
+}
+
+function setPaletteSlot(index, hex) {
+  const normalized = normalizeHex(hex);
+  if (!normalized || index < 0 || index >= paletteSize) return;
+
+  savedColors[index] = normalized;
+  savedColors = savedColors.filter(Boolean).slice(0, paletteSize);
+  renderSavedPalette();
+}
+
+function removePaletteColor(index) {
+  savedColors.splice(index, 1);
+  renderSavedPalette();
+}
+
+function setPaletteSize(nextSize) {
+  paletteSize = clamp(Number(nextSize) || 5, 3, 8);
+  savedColors = savedColors.slice(0, paletteSize);
+  renderSavedPalette();
+}
+
+function renderSavedPalette() {
+  if (!savedPalette) return;
+
+  const slots = Array.from({ length: paletteSize }, (_, index) => savedColors[index] || "");
+  savedPalette.innerHTML = slots.map((hex, index) => {
+    if (!hex) {
+      return `
+        <div class="palette-slot empty">
+          <div class="slot-actions">
+            <button class="slot-action" type="button" data-fill-current="${index}" title="${t("addToPalette")}" aria-label="${t("addToPalette")}">${icon("plus")}</button>
+            <button class="slot-action" type="button" data-suggest-slot="${index}" title="${t("suggestColor")}" aria-label="${t("suggestColor")}">${icon("sparkles")}</button>
+          </div>
+          <span>${t("emptySlot")}</span>
+        </div>
+      `;
+    }
+
+    return `
+      <div class="palette-slot filled" style="background:${hex};color:${textColorFor(hex)};text-shadow:none">
+        <div class="slot-actions">
+          <button class="slot-action" type="button" data-copy="${hex}" title="${t("copyColor")}" aria-label="${t("copyColor")} ${hex}">${icon("copy")}</button>
+          <button class="slot-action" type="button" data-export-color="${hex}" title="${t("exportCard")}" aria-label="${t("exportCard")} ${hex}">${icon("card")}</button>
+          <button class="slot-action" type="button" data-remove-slot="${index}" title="${t("removeColor")}" aria-label="${t("removeColor")} ${hex}">${icon("x")}</button>
+        </div>
+        <span>${hex}</span>
+      </div>
+    `;
+  }).join("");
+}
+
+function getColorCardCodes(hex) {
+  const rgb = hexToRgb(hex);
+  const hsl = rgbToHsl(rgb);
+  const cmyk = rgbToCmyk(rgb);
+  const pantone = nearestPantones(hex)[0];
+
+  return [
+    ["HEX", hex],
+    ["RGB", `${rgb.r}, ${rgb.g}, ${rgb.b}`],
+    ["HSL", `${hsl.h}deg, ${hsl.s}%, ${hsl.l}%`],
+    ["CMYK", cmykValue(cmyk)],
+    ["PANTONE", pantone ? `${pantone.name}` : "-"],
+    ["NAME", nearestName(hex)]
+  ];
+}
+
+function renderColorCard(hex) {
+  if (!exportCardSwatch || !exportCodeGrid || !colorCardTitle) return;
+
+  exportCardHex = normalizeHex(hex) || currentHex;
+  exportCardSwatch.style.background = exportCardHex;
+  colorCardTitle.textContent = t("colorCard");
+  exportCodeGrid.innerHTML = getColorCardCodes(exportCardHex)
+    .map(([label, value]) => `
+      <div class="export-code">
+        <span>${label}</span>
+        <strong>${value}</strong>
+      </div>
+    `)
+    .join("");
+}
+
+function openColorCard(hex) {
+  if (!colorCardOverlay) return;
+
+  renderColorCard(hex);
+  colorCardOverlay.hidden = false;
+}
+
+function closeColorCardModal() {
+  if (!colorCardOverlay) return;
+  colorCardOverlay.hidden = true;
+}
+
+function drawColorCard(canvas, hex) {
+  const ctx = canvas.getContext("2d");
+  const codes = getColorCardCodes(hex);
+  const width = 900;
+  const swatchHeight = 620;
+  const bottomHeight = 430;
+  const height = swatchHeight + bottomHeight;
+
+  canvas.width = width;
+  canvas.height = height;
+  ctx.fillStyle = hex;
+  ctx.fillRect(0, 0, width, swatchHeight);
+  ctx.fillStyle = "#FFFFFF";
+  ctx.fillRect(0, swatchHeight, width, bottomHeight);
+  ctx.fillStyle = "#111111";
+  ctx.font = "700 30px Inter, Arial, sans-serif";
+  ctx.fillText(t("colorCard"), 70, swatchHeight + 70);
+
+  ctx.font = "700 22px Inter, Arial, sans-serif";
+  codes.forEach(([label, value], index) => {
+    const col = index % 2;
+    const row = Math.floor(index / 2);
+    const x = col === 0 ? 70 : 470;
+    const y = swatchHeight + 135 + (row * 84);
+    ctx.fillStyle = "#6c6c72";
+    ctx.fillText(label, x, y);
+    ctx.fillStyle = "#111111";
+    ctx.font = "400 25px Inter, Arial, sans-serif";
+    ctx.fillText(value, x, y + 34);
+    ctx.font = "700 22px Inter, Arial, sans-serif";
+  });
+}
+
+function downloadColorCardImage() {
+  const canvas = document.createElement("canvas");
+  drawColorCard(canvas, exportCardHex);
+  const link = document.createElement("a");
+  link.download = `color-card-${exportCardHex.replace("#", "")}.png`;
+  link.href = canvas.toDataURL("image/png");
+  link.click();
 }
 
 function updateColor(nextHex, options = {}) {
@@ -839,9 +1067,28 @@ function applyLanguage(language) {
   if (languageSelect) {
     languageSelect.setAttribute("aria-label", t("chooseLanguage"));
   }
+  if (paletteSizeSelect) {
+    paletteSizeSelect.setAttribute("aria-label", t("paletteSize"));
+  }
+  document.querySelectorAll("[data-add-color]").forEach((button) => {
+    button.setAttribute("title", t("addToPalette"));
+    button.setAttribute("aria-label", t("addToPalette"));
+  });
+  document.querySelector("[data-add-current]")?.setAttribute("title", t("addToPalette"));
+  document.querySelector("[data-add-current]")?.setAttribute("aria-label", t("addToPalette"));
+  if (closeColorCard) {
+    closeColorCard.setAttribute("aria-label", t("closeColorCard"));
+  }
+  if (downloadColorCard) {
+    downloadColorCard.textContent = t("downloadCard");
+  }
+  if (!colorCardOverlay?.hidden) {
+    renderColorCard(exportCardHex);
+  }
   updateThemeButton();
   renderValues(currentHex);
   renderRelated(paletteBaseHex);
+  renderSavedPalette();
 }
 
 function updateThemeButton() {
@@ -868,6 +1115,26 @@ imageInput?.addEventListener("change", (event) => {
   handleImageUpload(event.target.files?.[0]);
 });
 
+paletteSizeSelect?.addEventListener("change", (event) => {
+  setPaletteSize(event.target.value);
+});
+
+closeColorCard?.addEventListener("click", closeColorCardModal);
+
+downloadColorCard?.addEventListener("click", downloadColorCardImage);
+
+colorCardOverlay?.addEventListener("click", (event) => {
+  if (event.target === colorCardOverlay) {
+    closeColorCardModal();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && colorCardOverlay && !colorCardOverlay.hidden) {
+    closeColorCardModal();
+  }
+});
+
 languageSelect?.addEventListener("change", (event) => {
   applyLanguage(event.target.value);
 });
@@ -892,6 +1159,43 @@ tabs.forEach((tab) => {
 document.addEventListener("click", async (event) => {
   const copyButton = event.target.closest("[data-copy], [data-copy-target]");
   const colorButton = event.target.closest("[data-color]");
+  const addButton = event.target.closest("[data-add-color]");
+  const addCurrentButton = event.target.closest("[data-add-current]");
+  const fillCurrentButton = event.target.closest("[data-fill-current]");
+  const suggestButton = event.target.closest("[data-suggest-slot]");
+  const removeButton = event.target.closest("[data-remove-slot]");
+  const exportButton = event.target.closest("[data-export-color]");
+
+  if (addButton) {
+    addColorToPalette(addButton.dataset.addColor);
+    return;
+  }
+
+  if (addCurrentButton) {
+    addColorToPalette(currentHex);
+    return;
+  }
+
+  if (fillCurrentButton) {
+    setPaletteSlot(Number(fillCurrentButton.dataset.fillCurrent), currentHex);
+    return;
+  }
+
+  if (suggestButton) {
+    const slotIndex = Number(suggestButton.dataset.suggestSlot);
+    setPaletteSlot(slotIndex, getPaletteSuggestion(slotIndex));
+    return;
+  }
+
+  if (removeButton) {
+    removePaletteColor(Number(removeButton.dataset.removeSlot));
+    return;
+  }
+
+  if (exportButton) {
+    openColorCard(exportButton.dataset.exportColor);
+    return;
+  }
 
   if (copyButton) {
     const directValue = copyButton.dataset.copy;
@@ -912,3 +1216,4 @@ document.addEventListener("click", async (event) => {
 syncSystemTabs();
 updateColor(currentHex);
 applyLanguage(currentLanguage);
+renderSavedPalette();
